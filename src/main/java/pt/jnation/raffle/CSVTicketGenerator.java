@@ -26,6 +26,7 @@ public class CSVTicketGenerator implements TicketGenerator {
             for (final CSVRecord record : records) {
                 final String firstName = record.get(1);
                 final String lastName = record.get(2);
+                final String email = record.get(5);
 
                 final int ticketsPerPerson =
                     IntStream.of(Integer.valueOf(record.get(13)) * 3,   // notebooks
@@ -35,7 +36,7 @@ public class CSVTicketGenerator implements TicketGenerator {
                              .sum();
 
                 for (int i = 0; i < ticketsPerPerson; i++) {
-                    tickets.add(firstName + " " + lastName);
+                    tickets.add(firstName + " " + lastName + "<br>" + email);
                 }
             }
         } catch (final IOException e) {
