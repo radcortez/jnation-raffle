@@ -1,0 +1,124 @@
+<html>
+	<head>
+		<title>JNation Winner Generator</title>
+		<script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="Open_Sans/style.css">
+		<style>
+			html, body {
+				margin: 0;
+				background-color: #e74c3c;
+				font: 12px 'Open Sans', sans-serif;
+			}
+			.background-overlay {
+				background-image: url(figure-icon3.png);
+				opacity: 0.5;
+				transition: background 0.3s, border-radius 0.3s, opacity 0.3s;
+				position: absolute;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+			}
+			#content-container {
+				position: absolute;
+				top: 100px;
+				right: 100px;
+				bottom: 100px;
+				left: 100px;
+				background-color: #f4f4f4;
+				-webkit-box-shadow: 0px 0px 10px 0px rgba(153,153,153,1);
+				-moz-box-shadow: 0px 0px 10px 0px rgba(153,153,153,1);
+				box-shadow: 0px 0px 10px 0px rgba(153,153,153,1);
+				border-radius: 5px;
+				padding: 30px;
+				text-align: center;
+			}
+			.button-container {
+				margin: 50px 0 20px;
+			}
+				.button-container .button {
+					background-color: #dd3333;
+					border-color: #dd3333;
+					color: #FFF;
+					padding: 14px 26px;
+					font-size: 13px;
+					border-radius: 5px;
+					cursor: pointer;
+				}
+				.button-container .loader {
+					display: none;
+					height: 18px;
+				}
+			#result-name-container {
+				font-size: 45px;
+				color: #282828;
+				margin: 40px 0 0;
+			}
+			#error-message {
+				display: none;
+				background-color: rgba(0,0,0,0.85);
+				position: absolute;
+				z-index: 9999;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				left: 0;
+				text-align: center;
+			}
+				#error-message .message {
+					font-size: 25px;
+					color: #EEE;
+					margin: 40px 0 0;
+				}
+		</style>
+	</head>
+	<body>
+		<div class="background-overlay"></div>
+		<div id="error-message">
+			<div class="message"></div>
+			<div class="button-container">
+				<a class="button" onclick="hideErrorMessage()">OK</a>
+			</div>
+		</div>
+		<div id="content-container">
+			<div id="logo-container"><img src="jnation_logo.png"></div>
+			<div class="button-container">
+				<a class="button" id="check-winner-button" onclick="checkWinner()">AND THE WINNER IS!!!</a>
+				<img src="loader.gif" class="loader" id="check-winner-button-loader">
+			</div>
+			<div id="result-name-container">TA DA DA DAAAAAA!</div>
+		</div>
+	</body>
+	<script>
+		const checkWinner = () => {
+			$("#check-winner-button").hide();
+			$("#check-winner-button-loader").show();
+			$.ajax({
+				type: "GET",
+				url:  "http://localhost:8080/raffle",
+				success: function(msg){
+					$("#check-winner-button").show();
+					$("#check-winner-button-loader").hide();
+					$("#result-name-container").html(msg);
+				},
+				statusCode: {
+					404: function() {
+						showErrorMessage('Hey... the URL was not found!');
+					},
+					500: function() {
+						showErrorMessage('Hey Roberto... the server had an error!');
+					}
+				}
+			});
+		}
+		
+		const showErrorMessage = msg => {
+			$("#error-message .message").html(msg);
+			$("#error-message").fadeIn();
+		}
+		
+		const hideErrorMessage = msg => {
+			$("#error-message").fadeOut();
+		}
+	</script>
+</html>
